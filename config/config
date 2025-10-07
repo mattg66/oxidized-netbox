@@ -1,0 +1,74 @@
+username: Your-Username-Here
+password: Your-Password-Here
+resolve_dns: true
+interval: 3600
+debug: false
+run_once: false
+threads: 30
+use_max_threads: false
+timeout: 20
+timelimit: 300
+retries: 3
+prompt: !ruby/regexp /^([\w.@-]+[#>]\s?)$/
+next_adds_job: false
+vars:
+  remove_secret: true
+  auth_methods: ["none", "publickey", "password", "keyboard-interactive"]
+groups:
+  Arista:
+    model: Arista
+  Cisco:
+    model: Cisco
+group_map: {}
+models: {}
+pid: "/home/oxidized/.config/oxidized/pid"
+extensions:
+  oxidized-web:
+    load: true
+    listen: 0.0.0.0
+    # Bind to port 8888 (default)
+    port: 8888
+crash:
+  directory: "/home/oxidized/.config/oxidized/crashes"
+  hostnames: false
+stats:
+  history_size: 10
+input:
+  default: ssh
+  debug: false
+  ssh:
+    secure: false
+  ftp:
+    passive: true
+  utf8_encoded: true
+output:
+  default: git
+  clean_obsolete_nodes: true
+  git:
+    user: Oxidized
+    email: o@itn.local
+    repo: "/home/oxidized/.config/oxidized/devices.git"
+source:
+  default: http
+  http:
+    url: https://Your-Netbox/api/dcim/devices/?cf_Backup=true
+    pagination: true
+    pagination_key_name: 'next'
+    scheme: https
+    secure: false
+    delimiter: !ruby/regexp /:/
+    hosts_location: results
+    read_timeout: 120
+    map:
+      name: name
+      model: platform.name
+      group: device_type.manufacturer.name
+      ip: primary_ip.display
+    vars_map:
+      enable: enable
+    headers:
+      Authorization: Token Your-API-Token-Here
+model_map:
+  IOS-XE: ios
+  EOS: eos
+  NX-OS: nxos
